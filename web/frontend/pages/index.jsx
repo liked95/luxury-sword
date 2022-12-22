@@ -19,14 +19,27 @@ import ResourceListWithFilter from "../components/ResourceListWithFilter";
 
 export default function HomePage() {
   const navigate = useNavigate();
+  const tabs = [
+    {
+      id: 1,
+      query: "All",
+      content: "All"
+    },
+    {
+      id: 2,
+      query: "Custom 1",
+      content: "Custom 1"
+    },
+    {
+      id: 3,
+      query: "Custom 2",
+      content: "Custom 2"
+    },
+  ]
 
   const [selected, setSelected] = useState(0)
 
   const handleTabChange = useCallback((tabIndex) => setSelected(tabIndex), [])
-
-  const handleClick = () => {
-    console.log("Clicked")
-  }
 
   const handleClickBanner = () => {
     console.log("ClickedBanner")
@@ -34,12 +47,11 @@ export default function HomePage() {
 
   const LockIcon = () => <Icon source={LockMajor} color="base" />
 
-  const tabs = [{ id: 1, title: "All", content: "All" }]
 
   return (
     <Page
       title="My Shopify App"
-      primaryAction={{ content: "Add page", onAction: handleClick }}
+      primaryAction={{ content: "Add page", onAction: () => navigate("/addpage") }}
     >
       <Layout>
         <Layout.Section>
@@ -57,7 +69,7 @@ export default function HomePage() {
         <Layout.Section>
           <Card>
             <Tabs tabs={tabs} selected={selected} onSelect={handleTabChange}>
-              <ResourceListWithFilter />
+              <ResourceListWithFilter query={tabs[selected].query} />
             </Tabs>
 
           </Card>

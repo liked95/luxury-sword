@@ -1,3 +1,4 @@
+import { useState, useCallback } from 'react';
 import {
     TextField,
     Filters,
@@ -6,14 +7,22 @@ import {
     ResourceList,
     Avatar,
     ResourceItem,
+    ChoiceList,
 
 } from '@shopify/polaris';
-import { useState, useCallback } from 'react';
 
-function ResourceListWithFilter() {
+function ResourceListWithFilter({ query }) {
+    console.log(query)
     const [selectedItems, setSelectedItems] = useState([]);
     const [sortValue, setSortValue] = useState('DATE_MODIFIED_DESC');
-    const [queryValue, setQueryValue] = useState("");
+    const [queryValue, setQueryValue] = useState(query);
+
+    const [accountStatus, setAccountStatus] = useState(null);
+    
+    const handleAccountStatusChange = useCallback(
+        (value) => setAccountStatus(value),
+        [],
+    );
 
 
 
@@ -59,17 +68,25 @@ function ResourceListWithFilter() {
 
     const filters = [
         {
-            key: 'taggedWith3',
-            label: 'Tagged with',
+            key: 'visibility',
+            label: 'Visibility',
             filter: (
-                <TextField
-                    label="Tagged with"
-                    autoComplete="off"
-                    labelHidden
+                <ChoiceList
+                    title="Account status"
+                    titleHidden
+                    choices={[
+                        { label: 'Visible', value: 'visible' },
+                        { label: 'Hidden', value: 'hidden' },
+                    ]}
+                    selected={accountStatus || []}
+                    onChange={handleAccountStatusChange}
+
                 />
             ),
             shortcut: true,
         },
+
+
     ];
 
 
@@ -81,6 +98,7 @@ function ResourceListWithFilter() {
             filters={filters}
 
         >
+
             <div style={{ paddingLeft: '8px' }}>
                 <Button onClick={() => console.log('New filter saved')}>Save</Button>
             </div>
@@ -97,6 +115,7 @@ function ResourceListWithFilter() {
             onSelectionChange={setSelectedItems}
             bulkActions={bulkActions}
             sortValue={sortValue}
+
             sortOptions={[
                 { label: 'Newest update', value: 'DATE_MODIFIED_DESC' },
                 { label: 'Oldest update', value: 'DATE_MODIFIED_ASC' },
@@ -105,6 +124,7 @@ function ResourceListWithFilter() {
                 setSortValue(selected);
                 console.log(`Sort option changed to ${selected}.`);
             }}
+            
             filterControl={filterControl}
         />
     );
