@@ -1,86 +1,70 @@
+import { useNavigate, TitleBar, Loading } from "@shopify/app-bridge-react";
 import {
+  Banner,
   Card,
-  Page,
+  EmptyState,
+  Icon,
   Layout,
-  TextContainer,
-  Image,
-  Stack,
-  Link,
-  Heading,
+  Page,
+  ResourceList,
+  SkeletonBodyText,
+  Tabs,
 } from "@shopify/polaris";
-import { TitleBar } from "@shopify/app-bridge-react";
 
-import { trophyImage } from "../assets";
-
-import { ProductsCard } from "../components";
+import {
+  LockMajor
+} from '@shopify/polaris-icons';
+import { useCallback, useState } from "react";
+import ResourceListWithFilter from "../components/ResourceListWithFilter";
 
 export default function HomePage() {
+  const navigate = useNavigate();
+
+  const [selected, setSelected] = useState(0)
+
+  const handleTabChange = useCallback((tabIndex) => setSelected(tabIndex), [])
+
+  const handleClick = () => {
+    console.log("Clicked")
+  }
+
+  const handleClickBanner = () => {
+    console.log("ClickedBanner")
+  }
+
+  const LockIcon = () => <Icon source={LockMajor} color="base" />
+
+  const tabs = [{ id: 1, title: "All", content: "All" }]
+
   return (
-    <Page narrowWidth>
-      <TitleBar title="App my" primaryAction={null} />
+    <Page
+      title="My Shopify App"
+      primaryAction={{ content: "Add page", onAction: handleClick }}
+    >
       <Layout>
         <Layout.Section>
-          <Card sectioned>
-            <Stack
-              wrap={false}
-              spacing="extraTight"
-              distribution="trailing"
-              alignment="center"
-            >
-              <Stack.Item fill>
-                <TextContainer spacing="loose">
-                  <Heading>Nice work on building a Shopify app 🎉</Heading>
-                  <p>
-                    Your app is ready to explore! It contains everything you
-                    need to get started including the{" "}
-                    <Link url="https://polaris.shopify.com/" external>
-                      Polaris design system
-                    </Link>
-                    ,{" "}
-                    <Link url="https://shopify.dev/api/admin-graphql" external>
-                      Shopify Admin API
-                    </Link>
-                    , and{" "}
-                    <Link
-                      url="https://shopify.dev/apps/tools/app-bridge"
-                      external
-                    >
-                      App Bridge
-                    </Link>{" "}
-                    UI library and components.
-                  </p>
-                  <p>
-                    Ready to go? Start populating your app with some sample
-                    products to view and test in your store.{" "}
-                  </p>
-                  <p>
-                    Learn more about building out your app in{" "}
-                    <Link
-                      url="https://shopify.dev/apps/getting-started/add-functionality"
-                      external
-                    >
-                      this Shopify tutorial
-                    </Link>{" "}
-                    📚{" "}
-                  </p>
-                </TextContainer>
-              </Stack.Item>
-              <Stack.Item>
-                <div style={{ padding: "0 20px" }}>
-                  <Image
-                    source={trophyImage}
-                    alt="Nice work on building a Shopify app"
-                    width={120}
-                  />
-                </div>
-              </Stack.Item>
-            </Stack>
+          <Banner
+            status="info"
+            icon={LockIcon}
+            title="Store access is restricted"
+            action={{ content: "See store password", onAction: handleClickBanner }}
+          >
+            <p>While your online store is in development, only visitors with the password can access it.</p>
+
+          </Banner>
+        </Layout.Section>
+
+        <Layout.Section>
+          <Card>
+            <Tabs tabs={tabs} selected={selected} onSelect={handleTabChange}>
+              <ResourceListWithFilter />
+            </Tabs>
+
           </Card>
         </Layout.Section>
-        <Layout.Section>
-          <ProductsCard />
-        </Layout.Section>
       </Layout>
+
+
     </Page>
   );
 }
